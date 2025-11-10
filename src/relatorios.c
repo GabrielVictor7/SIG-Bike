@@ -29,12 +29,12 @@ char menu_relatorio(void) {
 
 void relatorio_funcionario(void){
     system("clear||cls");
-    printf("╔═══════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                          Listar Clientes                           ║\n");
+    printf("╔════════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    Relatório Clientes                              ║\n");
     printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("║       Nome        ║       CPF       ║           Email             ║      Fone      ║\n");
     printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Tecle <ENTER> para continuar...");
+    printf("ENTER para continuar");
     getchar();
 }
 
