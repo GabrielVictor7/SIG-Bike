@@ -38,3 +38,14 @@ void relatorio_funcionario(void){
     getchar();
 }
 
+void relatorio_funcionario(void){
+    system("clear||cls");
+    printf("╔════════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                Relatório Funcionários                              ║\n");
+    printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("║       Nome        ║       CPF       ║           Email             ║      Fone      ║\n");
+    printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("ENTER para continuar");
+    getchar();
+}
+
