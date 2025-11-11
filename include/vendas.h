@@ -25,4 +25,6 @@ void tela_pesquisar_venda(void);
 void tela_editar_venda(void);
 void tela_excluir_venda(void);
 
+Venda* obter_vendas(int* qtd);
+
 #endif

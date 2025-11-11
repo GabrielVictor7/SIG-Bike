@@ -44,6 +44,7 @@ void tela_principal(void) {
             case 2: modulo_funcionarios(); break;
             case 3: modulo_bicicletas(); break;
             case 4: modulo_vendas(); break;
+            case 5: modulo_relatorios(); break;
             case 6: return;
             default:
                 printf("Opção inválida! Tente novamente.\n");

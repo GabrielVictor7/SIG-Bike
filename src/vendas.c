@@ -303,5 +303,16 @@ void tela_excluir_venda(void) {
         printf("Venda não encontrada.\n");
         Enter();
     }
+
+   
+
+
+}
+
+
+Venda* obter_vendas(int* qtd) {
+    carregar_vendas_binario();
+    *qtd = qtd_vendas;
+    return vendas;
 }
 
