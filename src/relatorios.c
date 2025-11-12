@@ -13,9 +13,10 @@ void modulo_relatorios(void) {
         opcao = menu_relatorio();
         switch (opcao) {
             case '1': relatorio_de_cliente_ativo(); break;
-            case '2': relatorio_bicicletas(); break;
-            case '3': relatorio_funcionario(); break;
-            case '4': tela_relatorio_vendas(); break;
+            case '2': relatorio_de_cliente_inativo(); break;
+            case '3': relatorio_bicicletas(); break;
+            case '4': relatorio_funcionario(); break;
+            case '5': tela_relatorio_vendas(); break;
             case '6': return; 
             default:
                 printf("Opção inválida!\n");
@@ -69,7 +70,7 @@ void relatorio_de_cliente_ativo(void) {
     const int CIDADE_W = 15;
     
     printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                              Relatório Clientes                                      ║\n");
+    printf("║                                           Relatório Clientes Ativos                                  ║\n");
     printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
     printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
            NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CIDADE_W, "Cidade");
@@ -106,6 +107,11 @@ void relatorio_de_cliente_ativo(void) {
 }
 
 void relatorio_de_cliente_inativo(void) {
+
+    // essa função foi totalmente reutilizada da anterior
+    // já que segue a mesma ordem de filtro, a diferença so ocorre no while que testa se esta ativo ou inativo.
+
+
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
     
     // ve se tem cliente cadastrado
@@ -122,21 +128,22 @@ void relatorio_de_cliente_inativo(void) {
 
     system("clear||cls");
     
-    // Configurações da largura das colunas
-    // usa as constantes do arquivo .h                           
+    // usa as constantes do arquivo .h  
+    
+    // essa parte da exibição foi feita com ajuda do gemini, essas constantes definem o tamanho do que vai ser exibido
+    // de acordo com o arquivo .h
     const int NOME_W = 20;
     const int CPF_W = 15;
     const int EMAIL_W = 30;
     const int CIDADE_W = 15;
     
     printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                              Relatório Clientes                                      ║\n");
+    printf("║                                        Relatório Clientes inativos                                   ║\n");
     printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
-    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
-           NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CIDADE_W, "Cidade");
+    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CIDADE_W, "Cidade");
     printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
 
-    // 2. Leitura dos registros e exibição
+    // essa parte roda o teste, se o cliente estiver inativo, ele será exibido nessa tela
     while (fread(&clien, sizeof(Cliente), 1, fp)) {
         if (clien.status == 'I') {
             printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
@@ -154,9 +161,9 @@ void relatorio_de_cliente_inativo(void) {
     fclose(fp);
 
     printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
-    // vai exibir essa mensagem se nenhum cliente estiver ativo
+    // vai exibir essa mensagem se nenhum cliente estiver inativo
     if (clientes_encontrados == 0) {
-        printf("\nNenhum cliente ativo encontrado.\n");
+        printf("\nNenhum cliente inativo foi encontrado.\n");
     } else {
         printf("\nTotal de clientes inativos listados: %d\n", clientes_encontrados);
     }
