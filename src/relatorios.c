@@ -32,7 +32,7 @@ char menu_relatorio(void) {
     printf("╠═══════════════════════════════════════════════════════════════════════════════╣\n");
     printf("║                           1. Lista Geral de Clientes ativos                   ║\n");
     printf("║                           2. Lista Geral de Clientes inativos                 ║\n");
-    printf("║                           3. Lista Geral de Funcionários Ativos               ║\n");
+    printf("║                           3. Lista Geral de Funcionários ativos               ║\n");
     printf("║                           4. Lista Geral de Clientes inativos                 ║\n");
     printf("║                           5. Lista Geral de Bicicletas                        ║\n");
     printf("║                           6. Lista Geral de Vendas                            ║\n");
@@ -98,6 +98,67 @@ void relatorio_de_cliente_ativo(void) {
         printf("\nNenhum cliente ativo encontrado.\n");
     } else {
         printf("\nTotal de clientes ativos listados: %d\n", clientes_encontrados);
+    }
+    // exibe essa mensagem junto da tela de relatóeio com o número de clientes ativos
+    
+    printf("\nENTER para continuar");
+    getchar();
+}
+
+void relatorio_de_cliente_inativo(void) {
+    FILE *fp = fopen(ARQ_CLIENTES, "rb");
+    
+    // ve se tem cliente cadastrado
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de Clientes ---\n");
+        printf("Nenhum cliente cadastrado ainda.\n");
+        Enter(); 
+        return;
+    }
+
+    Cliente clien; // struct
+    int clientes_encontrados = 0;  
+
+    system("clear||cls");
+    
+    // Configurações da largura das colunas
+    // usa as constantes do arquivo .h                           
+    const int NOME_W = 20;
+    const int CPF_W = 15;
+    const int EMAIL_W = 30;
+    const int CIDADE_W = 15;
+    
+    printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                              Relatório Clientes                                      ║\n");
+    printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
+    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
+           NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CIDADE_W, "Cidade");
+    printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
+
+    // 2. Leitura dos registros e exibição
+    while (fread(&clien, sizeof(Cliente), 1, fp)) {
+        if (clien.status == 'I') {
+            printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
+                   clien.status,
+                   NOME_W, NOME_W, clien.nome,
+                   CPF_W, CPF_W, clien.cpf,
+                   EMAIL_W, EMAIL_W, clien.email,
+                   CIDADE_W, CIDADE_W, clien.cidade);
+            clientes_encontrados++;
+        }
+    }
+    // A parte da exibição das constantes foi criada com o ajuda do gemini
+    
+    
+    fclose(fp);
+
+    printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
+    // vai exibir essa mensagem se nenhum cliente estiver ativo
+    if (clientes_encontrados == 0) {
+        printf("\nNenhum cliente ativo encontrado.\n");
+    } else {
+        printf("\nTotal de clientes inativos listados: %d\n", clientes_encontrados);
     }
     // exibe essa mensagem junto da tela de relatóeio com o número de clientes ativos
     
