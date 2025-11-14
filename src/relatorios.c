@@ -14,9 +14,10 @@ void modulo_relatorios(void) {
         switch (opcao) {
             case '1': relatorio_de_cliente_ativo(); break;
             case '2': relatorio_de_cliente_inativo(); break;
-            case '3': relatorio_bicicletas(); break;
-            case '4': relatorio_funcionario(); break;
-            case '5': tela_relatorio_vendas(); break;
+            case '3': relatorio_de_funcionario_ativo(); break;
+            case '4': relatorio_bicicletas(); break;
+            //case '5': relatorio_funcionario(); break;
+            case '6': tela_relatorio_vendas(); break;
             // adicionar um tipo de relatório
             case '7': return; 
             default:
