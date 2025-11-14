@@ -17,7 +17,8 @@ void modulo_relatorios(void) {
             case '3': relatorio_bicicletas(); break;
             case '4': relatorio_funcionario(); break;
             case '5': tela_relatorio_vendas(); break;
-            case '6': return; 
+            // adicionar um tipo de relatório
+            case '7': return; 
             default:
                 printf("Opção inválida!\n");
                 Enter();
@@ -173,14 +174,64 @@ void relatorio_de_cliente_inativo(void) {
     getchar();
 }
 
-void relatorio_funcionario(void) {
+void relatorio_de_funcionario_ativo(void) {
+    FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
+    
+    // ve se tem Funcionário cadastrado
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de Funcionários ---\n");
+        printf("Nenhum Funcionário cadastrado ainda.\n");
+        Enter(); 
+        return;
+    }
+
+    Funcionario func; // struct
+    int funcionarios_encontrados = 0;  
+
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                Relatório Funcionários                              ║\n");
-    printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("║       Nome        ║       CPF       ║           Email             ║      Fone      ║\n");
-    printf("╚════════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("ENTER para continuar");
+    
+    // Configurações da largura das colunas
+    // usa as constantes do arquivo .h                           
+    const int NOME_W = 20;
+    const int CPF_W = 15;
+    const int EMAIL_W = 30;
+    const int CARGO_W = 15;
+    
+    printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                        Relatório Funcionário Ativos                                  ║\n");
+    printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
+    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
+           NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CARGO_W, "Cargo");
+    printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
+
+    // 2. Leitura dos registros e exibição
+    while (fread(&func, sizeof(Funcionario), 1, fp)) {
+        if (func.status == 'A') {
+            printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
+                   func.status,
+                   NOME_W, NOME_W, func.nome,
+                   CPF_W, CPF_W, func.cpf,
+                   EMAIL_W, EMAIL_W, func.email,
+                   CARGO_W, CARGO_W, func.cargo);
+            funcionarios_encontrados++;
+        }
+    }
+    // A parte da exibição das constantes foi criada com o ajuda do gemini
+    
+    
+    fclose(fp);
+
+    printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
+    // vai exibir essa mensagem se nenhum cliente estiver ativo
+    if (funcionarios_encontrados == 0) {
+        printf("\nNenhum funcionário ativo encontrado.\n");
+    } else {
+        printf("\nTotal de funcionário ativos listados: %d\n", funcionarios_encontrados);
+    }
+    // exibe essa mensagem junto da tela de relatóeio com o número de clientes ativos
+    
+    printf("\nENTER para continuar");
     getchar();
 }
 
