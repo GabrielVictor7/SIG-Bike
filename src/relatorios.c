@@ -37,7 +37,7 @@ char menu_relatorio(void) {
     printf("║                           1. Lista Geral de Clientes ativos                   ║\n");
     printf("║                           2. Lista Geral de Clientes inativos                 ║\n");
     printf("║                           3. Lista Geral de Funcionários ativos               ║\n");
-    printf("║                           4. Lista Geral de Clientes inativos                 ║\n");
+    printf("║                           4. Lista Geral de FUncionários inativos             ║\n");
     printf("║                           5. Lista Geral de Bicicletas                        ║\n");
     printf("║                           6. Lista Geral de Vendas                            ║\n");
     printf("║                           7. Voltar ao menu anterior                          ║\n");
