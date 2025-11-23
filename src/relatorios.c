@@ -338,7 +338,7 @@ void relatorio_de_funcionario_ativo(void) {
            
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
 
-    while (fread(&func, sizeof(Cliente), 1, fp)) {
+    while (fread(&func, sizeof(Funcionario), 1, fp)) {
         if (func.status == 'A') {
             printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
                    func.status,
