@@ -71,7 +71,7 @@ char tela_relatorio_clientes(void) {
     printf("╔═══════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                             Módulo Relatório Clientes                         ║\n");
     printf("╠═══════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                           1. Relatorio clientes ativo                         ║\n");
+    printf("║                           1. Relatorio Clientes ativo                         ║\n");
     printf("║                           2. Relatorio Clientes inativos                      ║\n");
     printf("║                                                                               ║\n");
     printf("║                           0. Voltar                                           ║\n");
@@ -206,9 +206,10 @@ char tela_relatorio_bicicletas(void) {
 
 
 void relatorio_de_cliente_ativo(void) {
+    // tenta abrir o arquivo em leitura binária
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
     
-    // ve se tem cliente cadastrado
+    // ve se tem clientes cadastrados
     if (!fp) {
         system("clear||cls");
         printf("--- Relatório de Clientes ---\n");
@@ -217,53 +218,47 @@ void relatorio_de_cliente_ativo(void) {
         return;
     }
 
-    Cliente clien; // struct
+    Cliente clien; 
     int clientes_encontrados = 0;  
 
     system("clear||cls");
     
-    // Configurações da largura das colunas
-    // usa as constantes do arquivo .h                           
-    const int NOME_W = 20;
-    const int CPF_W = 15;
-    const int EMAIL_W = 30;
-    const int CIDADE_W = 15;
+    printf("--- Relatório Clientes Ativos ---\n\n");
     
-    printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                           Relatório Clientes Ativos                                  ║\n");
-    printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
-    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
-           NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CIDADE_W, "Cidade");
-    printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
+    printf("════════════════════════════════════\n");
+    printf("Status | Nome | CPF | Email | Cidade\n");
+    printf("════════════════════════════════════\n"); 
 
     // 2. Leitura dos registros e exibição
     while (fread(&clien, sizeof(Cliente), 1, fp)) {
+        // Verifica se o status do cliente é 'A' (Ativo)
         if (clien.status == 'A') {
-            printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
+            // Exibe os dados do cliente ativo
+            // Usando apenas formatação padrão e um separador
+            printf("%c ║ %s ║ %s ║ %s ║ %s\n",
                    clien.status,
-                   NOME_W, NOME_W, clien.nome,
-                   CPF_W, CPF_W, clien.cpf,
-                   EMAIL_W, EMAIL_W, clien.email,
-                   CIDADE_W, CIDADE_W, clien.cidade);
+                   clien.nome,
+                   clien.cpf,
+                   clien.email,
+                   clien.cidade);
             clientes_encontrados++;
         }
     }
-    // A parte da exibição das constantes foi criada com o ajuda do gemini
     
-    
+    // Fecha o arquivo
     fclose(fp);
 
-    printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
-    // vai exibir essa mensagem se nenhum cliente estiver ativo
+    printf("════════════════════════════════════\n");
+
+    // Exibe o resumo
     if (clientes_encontrados == 0) {
         printf("\nNenhum cliente ativo encontrado.\n");
     } else {
         printf("\nTotal de clientes ativos listados: %d\n", clientes_encontrados);
     }
-    // exibe essa mensagem junto da tela de relatóeio com o número de clientes ativos
     
     printf("\nENTER para continuar");
-    getchar();
+    getchar(); // Aguarda a tecla ENTER
 }
 
 
