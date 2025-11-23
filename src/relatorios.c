@@ -316,64 +316,52 @@ void relatorio_de_cliente_inativo(void) {
 
 
 void relatorio_de_funcionario_ativo(void) {
-    FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
+
+    FILE *fp = fopen(ARQ_CLIENTES, "rb");
     
-    // ve se tem Funcionário cadastrado
     if (!fp) {
         system("clear||cls");
         printf("--- Relatório de Funcionários ---\n");
-        printf("Nenhum Funcionário cadastrado ainda.\n");
+        printf("Nenhum funcionário cadastrado ainda.\n");
         Enter(); 
         return;
     }
 
-    Funcionario func; // struct
+    Funcionario func; 
     int funcionarios_encontrados = 0;  
 
     system("clear||cls");
-    
-    // Configurações da largura das colunas
-    // usa as constantes do arquivo .h                           
-    const int NOME_W = 20;
-    const int CPF_W = 15;
-    const int EMAIL_W = 30;
-    const int CARGO_W = 15;
-    
-    printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                        Relatório Funcionário Ativos                                  ║\n");
-    printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
-    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", 
-           NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CARGO_W, "Cargo");
-    printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
+    printf("════════════════════════════════════           Relatório Funcionário Ativos           ════════════════════════════════════\n");
+    printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
+           "Status", "Nome", "CPF", "Email", "Cargo");
+           
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
 
-    // 2. Leitura dos registros e exibição
-    while (fread(&func, sizeof(Funcionario), 1, fp)) {
+    while (fread(&func, sizeof(Cliente), 1, fp)) {
         if (func.status == 'A') {
-            printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
+            printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
                    func.status,
-                   NOME_W, NOME_W, func.nome,
-                   CPF_W, CPF_W, func.cpf,
-                   EMAIL_W, EMAIL_W, func.email,
-                   CARGO_W, CARGO_W, func.cargo);
+                   func.nome,    
+                   func.cpf,     
+                   func.email,   
+                   func.cargo); 
             funcionarios_encontrados++;
         }
     }
-    // A parte da exibição das constantes foi criada com o ajuda do gemini
-    
     
     fclose(fp);
 
-    printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
-    // vai exibir essa mensagem se nenhum cliente estiver ativo
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+
     if (funcionarios_encontrados == 0) {
         printf("\nNenhum funcionário ativo encontrado.\n");
     } else {
-        printf("\nTotal de funcionário ativos listados: %d\n", funcionarios_encontrados);
+        printf("\nTotal de funcionarios ativos listados: %d\n", funcionarios_encontrados);
     }
-    // exibe essa mensagem junto da tela de relatóeio com o número de clientes ativos
     
     printf("\nENTER para continuar");
-    getchar();
+    getchar(); 
 }
 
 
