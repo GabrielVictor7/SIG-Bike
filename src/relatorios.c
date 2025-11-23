@@ -317,7 +317,7 @@ void relatorio_de_cliente_inativo(void) {
 
 void relatorio_de_funcionario_ativo(void) {
 
-    FILE *fp = fopen(ARQ_CLIENTES, "rb");
+    FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
     
     if (!fp) {
         system("clear||cls");
