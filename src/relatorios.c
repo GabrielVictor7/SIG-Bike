@@ -426,6 +426,7 @@ FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
 //════════════════════════════════════════════════ RELATORIO DE VENDAS ════════════════════════════════════════════════
 
 
+
 void relatorio_vendas(void) {
 
     FILE *arq = fopen(ARQ_VENDAS, "rb");
@@ -442,13 +443,11 @@ void relatorio_vendas(void) {
     int total_itens_vendidos = 0;
     float faturamento_total = 0.0;
 
-    
-    char melhor_cliente[20] = "";
-    char melhor_funcionario[20] = "";
+    char melhor_cliente[50] = "";
+    char melhor_funcionario[50] = "";
     int compras_cliente_max = 0;
     int vendas_func_max = 0;
 
-    
     Venda lista[MAX_VENDAS];
     int qtd_vendas = 0;
 
@@ -463,64 +462,68 @@ void relatorio_vendas(void) {
     printf("       ║                        RELATÓRIO DE VENDAS                       ║\n");
     printf("       ╚══════════════════════════════════════════════════════════════════╝\n\n");
 
-    printf("╔══════╦═════════╦════════════════╦════════════════╦════════════╦══════════════╗\n");
-    printf("║ ID   ║ Status  ║ CPF Cliente    ║ CPF Funcionário║ Quantidade ║ Valor Total  ║\n");
-    printf("╠══════╬═════════╬════════════════╬════════════════╬════════════╬══════════════╣\n");
+    printf("╔══════╦═════════╦════════════════════╦════════════════════╦════════════╦══════════════╗\n");
+    printf("║ ID   ║ Status  ║ Cliente            ║ Funcionário        ║ Quantidade ║ Valor Total  ║\n");
+    printf("╠══════╬═════════╬════════════════════╬════════════════════╬════════════╬══════════════╣\n");
 
-  
+    char nome_cliente[50], nome_funcionario[50];
+
     for (int i = 0; i < qtd_vendas; i++) {
         v = lista[i];
 
-        printf("║ %-4d ║    %c    ║ %-14s ║ %-14s ║ %-10d ║ R$ %8.2f  ║\n",
+        // Buscar nomes pelo CPF
+        buscar_nome_cliente(v.cpf_cliente, nome_cliente);
+        buscar_nome_funcionario(v.cpf_funcionario, nome_funcionario);
+
+        printf("║ %-4d ║    %c    ║ %-18s ║ %-18s ║ %-10d ║ R$ %8.2f  ║\n",
                v.id,
                v.status,
-               v.cpf_cliente,
-               v.cpf_funcionario,
+               nome_cliente,
+               nome_funcionario,
                v.quantidade,
                v.valor_total);
 
         total++;
-
-      
+        if (v.status == 'A') {
+            ativas++;
+            total_itens_vendidos += v.quantidade;
+            faturamento_total += v.valor_total;
+        } else {
+            inativas++;
+        }
     }
 
-    printf("╚══════╩═════════╩════════════════╩════════════════╩════════════╩══════════════╝\n");
+    printf("╚══════╩═════════╩════════════════════╩════════════════════╩════════════╩══════════════╝\n");
 
-    
+    // Cliente que mais comprou
     for (int i = 0; i < qtd_vendas; i++) {
         if (lista[i].status == 'I') continue;
-
         int count = 0;
         for (int j = 0; j < qtd_vendas; j++) {
             if (lista[j].status == 'A' &&
                 strcmp(lista[j].cpf_cliente, lista[i].cpf_cliente) == 0)
                 count++;
         }
-
         if (count > compras_cliente_max) {
             compras_cliente_max = count;
-            strcpy(melhor_cliente, lista[i].cpf_cliente);
+            buscar_nome_cliente(lista[i].cpf_cliente, melhor_cliente);
         }
     }
 
-  
+    // Funcionário que mais vendeu
     for (int i = 0; i < qtd_vendas; i++) {
         if (lista[i].status == 'I') continue;
-
         int count = 0;
         for (int j = 0; j < qtd_vendas; j++) {
             if (lista[j].status == 'A' &&
                 strcmp(lista[j].cpf_funcionario, lista[i].cpf_funcionario) == 0)
                 count++;
         }
-
         if (count > vendas_func_max) {
             vendas_func_max = count;
-            strcpy(melhor_funcionario, lista[i].cpf_funcionario);
+            buscar_nome_funcionario(lista[i].cpf_funcionario, melhor_funcionario);
         }
     }
-
-
 
     printf("\nResumo Geral:\n");
     printf("═══════════════════════════════════════════════════════════════\n");
@@ -535,7 +538,6 @@ void relatorio_vendas(void) {
         printf("Ticket médio: R$ %.2f\n\n", faturamento_total / ativas);
 
     printf("Destaques:\n");
-
 
     if (compras_cliente_max > 0)
         printf("Cliente que mais comprou: %s  (%d compras)\n",
