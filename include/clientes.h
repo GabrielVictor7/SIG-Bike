@@ -27,6 +27,7 @@ void tela_ver_clientes(void);
 void tela_pesquisar_cliente(void);
 void tela_editar_cliente(void);
 void tela_excluir_cliente(void);
+void buscar_nome_cliente(const char *cpf, char *nome);
 
 // Função utilitária para verificação de existência
 int cliente_existe_arquivo(const char *cpf); 
