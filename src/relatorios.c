@@ -374,10 +374,8 @@ void relatorio_de_funcionario_inativo(void) {
     // essa função foi totalmente reutilizada da anterior
     // já que segue a mesma ordem de filtro, a diferença so ocorre no while que testa se esta ativo ou inativo.
 
-
-    FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
+FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
     
-    // ve se tem funcionário cadastrado
     if (!fp) {
         system("clear||cls");
         printf("--- Relatório de Funcionários ---\n");
@@ -386,53 +384,41 @@ void relatorio_de_funcionario_inativo(void) {
         return;
     }
 
-    Funcionario func; // struct
+    Funcionario func; 
     int funcionarios_encontrados = 0;  
 
     system("clear||cls");
-    
-    // usa as constantes do arquivo .h  
-    
-    // essa parte da exibição foi feita com ajuda do gemini, essas constantes definem o tamanho do que vai ser exibido
-    // de acordo com o arquivo .h
-    const int NOME_W = 20;
-    const int CPF_W = 15;
-    const int EMAIL_W = 30;
-    const int CARGO_W = 15;
-    
-    printf("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                        Relatório Clientes inativos                                   ║\n");
-    printf("╠═══════╦═══════════════════════╦═════════════════╦═══════════════════════════════════╦════════════════╣\n");
-    printf("║Status ║ %-*s  ║ %-*s ║ %-*s    ║%-*s ║\n", NOME_W, "Nome", CPF_W, "CPF", EMAIL_W, "Email", CARGO_W, "Cargo");
-    printf("╠═══════╬═══════════════════════╬═════════════════╬═══════════════════════════════════╬════════════════╣\n");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
+    printf("════════════════════════════════════           Relatório Funcionário inativos         ════════════════════════════════════\n");
+    printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
+           "Status", "Nome", "CPF", "Email", "Cargo");
+           
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
 
-    // essa parte roda o teste, se o funcionário estiver inativo, ele será exibido nessa tela
     while (fread(&func, sizeof(Funcionario), 1, fp)) {
         if (func.status == 'I') {
-            printf("║   %c   ║ %-*.*s  ║ %-*.*s ║ %-*.*s    ║%-*.*s ║\n",
+            printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
                    func.status,
-                   NOME_W, NOME_W, func.nome,
-                   CPF_W, CPF_W, func.cpf,
-                   EMAIL_W, EMAIL_W, func.email,
-                   CARGO_W, CARGO_W, func.cargo);
+                   func.nome,    
+                   func.cpf,     
+                   func.email,   
+                   func.cargo); 
             funcionarios_encontrados++;
         }
     }
-    // A parte da exibição das constantes foi criada com o ajuda do gemini
-    
     
     fclose(fp);
 
-    printf("╚═══════╩═══════════════════════╩═════════════════╩═══════════════════════════════════╩════════════════╝\n");
-    // vai exibir essa mensagem se nenhum funcionário estiver inativo
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+
     if (funcionarios_encontrados == 0) {
-        printf("\nNenhum funcionário inativo foi encontrado.\n");
+        printf("\nNenhum funcionário inativo encontrado.\n");
     } else {
-        printf("\nTotal de clientes inativos listados: %d\n", funcionarios_encontrados);
+        printf("\nTotal de funcionarios inativos listados: %d\n", funcionarios_encontrados);
     }
     
     printf("\nENTER para continuar");
-    getchar();
+    getchar(); 
 }
 
 
