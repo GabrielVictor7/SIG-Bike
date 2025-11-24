@@ -18,9 +18,9 @@ void modulo_funcionarios(void) {
         printf("///                                                                         ///\n");
         printf("///                   ____ ___ ____       ____  _ _                         ///\n");
         printf("///                  / ___|_ _/ ___|     | __ )(_) | _____                  ///\n");
-        printf("///                  \\___ \\| | |  _ _____|  _ \\| | |/ / _ \\                 ///\n");
-        printf("///                   ___) | | |_| |_____| |_) | |   <  __/                 ///\n");
-        printf("///                  |____/___\\____|     |____/|_|_|\\_\\___|                 ///\n");
+        printf("///                  \\___ \\| | |  _ ___| |_) | | |/ / _ \\                ///\n");
+        printf("///                   ___) | | |_| |_____| |_) | |  < __/                   ///\n");
+        printf("///                  |____/___\\____|    |____/|_|_|\\_\\__|                ///\n");
         printf("///                                                                         ///\n");
         printf("///                                                                         ///\n");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
@@ -350,6 +350,30 @@ void tela_excluir_funcionario(void) {
 
     Enter();
 } 
+
+
+
+
+void buscar_nome_funcionario(const char *cpf, char *nome) {
+    FILE *arq = fopen(ARQ_FUNCIONARIOS, "rb");
+    if (!arq) {
+        strcpy(nome, "Desconhecido");
+        return;
+    }
+
+    Funcionario f;
+    while (fread(&f, sizeof(Funcionario), 1, arq) == 1) {
+        if (f.status == 'A' && strcmp(f.cpf, cpf) == 0) {
+            strcpy(nome, f.nome);
+            fclose(arq);
+            return;
+        }
+    }
+
+    strcpy(nome, "Desconhecido");
+    fclose(arq);
+}
+
 
 
 
