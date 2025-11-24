@@ -31,6 +31,7 @@ void tela_ver_funcionarios(void);
 void tela_pesquisar_funcionario(void);
 void tela_editar_funcionario(void);
 void tela_excluir_funcionario(void);
+void buscar_nome_funcionario(const char *cpf, char *nome);
 
 // Função utilitária para verificação de existência
 int funcionario_existe_arquivo(const char *cpf);
