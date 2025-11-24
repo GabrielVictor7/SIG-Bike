@@ -309,3 +309,25 @@ void tela_excluir_cliente(void) {
 
     Enter();
 }
+
+
+
+void buscar_nome_cliente(const char *cpf, char *nome) {
+    FILE *arq = fopen(ARQ_CLIENTES, "rb");
+    if (!arq) {
+        strcpy(nome, "Não está cadastrado.");
+        return;
+    }
+
+    Cliente c;
+    while (fread(&c, sizeof(Cliente), 1, arq) == 1) {
+        if (c.status == 'A' && strcmp(c.cpf, cpf) == 0) {
+            strcpy(nome, c.nome);
+            fclose(arq);
+            return;
+        }
+    }
+
+    strcpy(nome, "Não está cadastrado.");
+    fclose(arq);
+}
