@@ -55,6 +55,7 @@ void modulo_relatorios_clientes(void) {
 
             case '1': relatorio_de_cliente_ativo(); break;
             case '2': relatorio_de_cliente_inativo(); break;
+            case '3': relat_clientes_ordem_alfabetica(); break;
 
             case '0': return; 
             default:
@@ -73,6 +74,7 @@ char tela_relatorio_clientes(void) {
     printf("╠═══════════════════════════════════════════════════════════════════════════════╣\n");
     printf("║                           1. Relatorio Clientes ativo                         ║\n");
     printf("║                           2. Relatorio Clientes inativos                      ║\n");
+    printf("║                           3. Relatorio Clientes em ordem alfabetica           ║\n");
     printf("║                                                                               ║\n");
     printf("║                           0. Voltar                                           ║\n");
     printf("╚═══════════════════════════════════════════════════════════════════════════════╝\n");
@@ -308,6 +310,59 @@ void relatorio_de_cliente_inativo(void) {
     printf("\nENTER para continuar");
     getchar(); 
 }
+
+
+
+void relat_clientes_ordem_alfabetica(void) {
+    FILE* fp = fopen(ARQ_CLIENTES, "rb");
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de Clientes ---\n");
+        printf("Nenhum cliente cadastrado ainda.\n");
+        Enter();
+        return;
+    }
+
+    Cliente clientesTemp[MAX_CLIENTES];
+    int qtd = 0;
+
+    // Lendo todos os clientes do arquivo
+    while (fread(&clientesTemp[qtd], sizeof(Cliente), 1, fp)) {
+        qtd++;
+        if (qtd >= MAX_CLIENTES) break;
+    }
+    fclose(fp);
+
+    // ===== Ordenando por nome (insensível a maiúsculas/minúsculas) =====
+    for (int i = 0; i < qtd - 1; i++) {
+        for (int j = i + 1; j < qtd; j++) {
+            if (strcasecmp(clientesTemp[i].nome, clientesTemp[j].nome) > 0) {
+                Cliente temp = clientesTemp[i];
+                clientesTemp[i] = clientesTemp[j];
+                clientesTemp[j] = temp;
+            }
+        }
+    }
+
+    // ===== Exibindo relatório =====
+    system("clear||cls");
+
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("═══════════════   Relatório de Clientes em Ordem Alfabética   ════════════════════════════════════════\n");
+    printf("%-7s | %-30s | %-30s | %-15s\n", "Status", "Nome", "Email", "CPF");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+
+    for (int i = 0; i < qtd; i++) {
+        printf("%-7c | %-30s | %-30s | %-15s\n",
+               clientesTemp[i].status,
+               clientesTemp[i].nome,
+               clientesTemp[i].email,
+               clientesTemp[i].cpf);
+    }
+
+    Enter();
+}
+
 
 
 
