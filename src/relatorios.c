@@ -326,14 +326,12 @@ void relat_clientes_ordem_alfabetica(void) {
     Cliente clientesTemp[MAX_CLIENTES];
     int qtd = 0;
 
-    // Lendo todos os clientes do arquivo
     while (fread(&clientesTemp[qtd], sizeof(Cliente), 1, fp)) {
         qtd++;
         if (qtd >= MAX_CLIENTES) break;
     }
     fclose(fp);
 
-    // ===== Ordenando por nome (insensível a maiúsculas/minúsculas) =====
     for (int i = 0; i < qtd - 1; i++) {
         for (int j = i + 1; j < qtd; j++) {
             if (strcasecmp(clientesTemp[i].nome, clientesTemp[j].nome) > 0) {
@@ -344,7 +342,6 @@ void relat_clientes_ordem_alfabetica(void) {
         }
     }
 
-    // ===== Exibindo relatório =====
     system("clear||cls");
 
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════\n");
@@ -475,6 +472,8 @@ FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
     printf("\nENTER para continuar");
     getchar(); 
 }
+
+
 
 
 
