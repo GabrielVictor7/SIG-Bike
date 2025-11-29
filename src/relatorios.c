@@ -323,38 +323,42 @@ void relat_clientes_ordem_alfabetica(void) {
         return;
     }
 
-    Cliente clientesTemp[MAX_CLIENTES];
+    Cliente clientes_temp[MAX_CLIENTES];
     int qtd = 0;
-
-    while (fread(&clientesTemp[qtd], sizeof(Cliente), 1, fp)) {
+    while (fread(&clientes_temp[qtd], sizeof(Cliente), 1, fp)) {
         qtd++;
         if (qtd >= MAX_CLIENTES) break;
     }
     fclose(fp);
+    
+    //parte da ordenação, nessa parte, eu tive ajuda no gemini e da wiki de algoritmos de ordenação
+    //estava tendo bastante dificuldade na parte das listas de clientes temporários
+    //e tambem na parte dos acentos e letras maiúsculas 
+    //https://pt.wikipedia.org/wiki/Algoritmo_de_ordena%C3%A7%C3%A3o <- link da wiki
 
     for (int i = 0; i < qtd - 1; i++) {
         for (int j = i + 1; j < qtd; j++) {
-            if (strcasecmp(clientesTemp[i].nome, clientesTemp[j].nome) > 0) {
-                Cliente temp = clientesTemp[i];
-                clientesTemp[i] = clientesTemp[j];
-                clientesTemp[j] = temp;
+            if (strcasecmp(clientes_temp[i].nome, clientes_temp[j].nome) > 0) {
+                Cliente temp = clientes_temp[i];
+                clientes_temp[i] = clientes_temp[j];
+                clientes_temp[j] = temp;
             }
         }
     }
 
     system("clear||cls");
 
-    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-    printf("═══════════════   Relatório de Clientes em Ordem Alfabética   ════════════════════════════════════════\n");
+    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("════════════════════════════════════════   Relatório de Clientes em Ordem Alfabética   ════════════════════════════════════════\n");
     printf("%-7s | %-30s | %-30s | %-15s\n", "Status", "Nome", "Email", "CPF");
-    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 
     for (int i = 0; i < qtd; i++) {
         printf("%-7c | %-30s | %-30s | %-15s\n",
-               clientesTemp[i].status,
-               clientesTemp[i].nome,
-               clientesTemp[i].email,
-               clientesTemp[i].cpf);
+               clientes_temp[i].status,
+               clientes_temp[i].nome,
+               clientes_temp[i].email,
+               clientes_temp[i].cpf);
     }
 
     Enter();
