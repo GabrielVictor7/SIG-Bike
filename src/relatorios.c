@@ -95,6 +95,8 @@ void modulo_relatorios_funcionarios(void) {
 
             case '1': relatorio_de_funcionario_ativo(); break;
             case '2': relatorio_de_funcionario_inativo(); break;
+            case '3': relat_funcionarios_ordem_alfabetica(); break;
+
 
             case '0': return; 
             default:
@@ -111,9 +113,9 @@ char tela_relatorio_funcionarios(void) {
     printf("╔═══════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                             Módulo Relatório funcionarios                     ║\n");
     printf("╠═══════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                           1. Relatorio funcionarios ativo                     ║\n");
-    printf("║                           2. Relatorio funcionarios inativos                  ║\n");
-    printf("║                                                                               ║\n");
+    printf("║                           1. Relatorio Funcionarios ativo                     ║\n");
+    printf("║                           2. Relatorio Funcionarios inativos                  ║\n");
+    printf("║                           3. Relatorio Funcionarios Ordem Alfabática          ║\n");
     printf("║                           0. Voltar                                           ║\n");
     printf("╚═══════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite a opção desejada: ");
@@ -330,7 +332,7 @@ void relat_clientes_ordem_alfabetica(void) {
         if (qtd >= MAX_CLIENTES) break;
     }
     fclose(fp);
-    
+
     //parte da ordenação, nessa parte, eu tive ajuda no gemini e da wiki de algoritmos de ordenação
     //estava tendo bastante dificuldade na parte das listas de clientes temporários
     //e tambem na parte dos acentos e letras maiúsculas 
@@ -475,6 +477,55 @@ FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
     
     printf("\nENTER para continuar");
     getchar(); 
+}
+
+
+void relat_funcionarios_ordem_alfabetica(void) {
+    FILE* fp = fopen(ARQ_FUNCIONARIOS, "rb");
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de Funcionários ---\n");
+        printf("Nenhum funcionário cadastrado ainda.\n");
+        Enter();
+        return;
+    }
+
+    Funcionario  funcionarios_temp[MAX_FUNCIONARIO];
+    int qtd = 0;
+
+    while (fread(&funcionarios_temp[qtd], sizeof(Funcionario), 1, fp)) {
+        qtd++;
+        if (qtd >= 100) break;
+    }
+    fclose(fp);
+
+    for (int i = 0; i < qtd - 1; i++) {
+        for (int j = i + 1; j < qtd; j++) {
+            if (strcasecmp(funcionarios_temp[i].nome, funcionarios_temp[j].nome) > 0) {
+                Funcionario temp = funcionarios_temp[i];
+                funcionarios_temp[i] = funcionarios_temp[j];
+                funcionarios_temp[j] = temp;
+            }
+        }
+    }
+
+    system("clear||cls");
+
+    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("════════════════════════════════════════   Relatório de Funcionários em Ordem Alfabética   ════════════════════════════════════════\n");
+    printf("%-7s | %-30s | %-30s | %-20s | %-15s\n", "Status", "Nome", "Email", "Cargo", "CPF");
+    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+
+    for (int i = 0; i < qtd; i++) {
+        printf("%-7c | %-30s | %-30s | %-20s | %-15s\n",
+               funcionarios_temp[i].status,
+               funcionarios_temp[i].nome,
+               funcionarios_temp[i].email,
+               funcionarios_temp[i].cargo,
+               funcionarios_temp[i].cpf);
+    }
+
+    Enter();
 }
 
 

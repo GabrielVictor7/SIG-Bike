@@ -12,6 +12,8 @@ void relat_clientes_ordem_alfabetica(void);
 
 void relatorio_de_funcionario_ativo(void);
 void relatorio_de_funcionario_inativo(void);
+void relat_funcionarios_ordem_alfabetica(void);
+
 
 void relatorio_bicicletas(void);
 void relatorio_bicicletas_ativas(void);
