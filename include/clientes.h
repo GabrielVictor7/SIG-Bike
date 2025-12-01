@@ -15,6 +15,7 @@ typedef struct {
     char cidade[TAM_CIDADE];
     char cpf[TAM_CPF];
     char status; // 'A' para ativo, 'I' para inativo
+    struct Cliente *prox;
 } Cliente;
 
 extern Cliente clientes[MAX_CLIENTES];
