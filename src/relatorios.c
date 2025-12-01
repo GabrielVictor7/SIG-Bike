@@ -273,51 +273,57 @@ void relatorio_de_cliente_ativo(void) {
 
 void relatorio_de_cliente_inativo(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
-    
-    // ve se tem cliente cadastrado
-    if (!fp) {
+
+    if (fp == NULL) {
         system("clear||cls");
         printf("--- Relatório de Clientes ---\n");
-        printf("Nenhum cliente cadastrado ainda.\n");
-        Enter(); 
+        printf("Erro na abertura dp arquivo\n");
+        printf("Enter para voltar...\n");
+        Enter();
         return;
     }
 
-    Cliente clien; // struct
-    int clientes_encontrados = 0;  
+    Cliente *clientes = malloc(MAX_CLIENTES * sizeof(Cliente));
+
+    int lidos = 0;
+    while (lidos < MAX_CLIENTES &&
+           fread(&clientes[lidos], sizeof(Cliente), 1, fp) == 1) {
+        lidos++;
+    }
+
+    fclose(fp);
 
     system("clear||cls");
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
-    printf("════════════════════════════════════            Relatório Clientes Inativos           ════════════════════════════════════\n");
+    printf("═══════════════════════════════════             Relatório Clientes inativos            ═══════════════════════════════════\n");
     printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
            "Status", "Nome", "CPF", "Email", "Cidade");
-           
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
 
-    while (fread(&clien, sizeof(Cliente), 1, fp)) {
-        if (clien.status == 'I') {
+    int ativos = 0;
+
+    for (int i = 0; i < lidos; i++) {
+        if (clientes[i].status == 'A') {
             printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
-                   clien.status,
-                   clien.nome,    
-                   clien.cpf,     
-                   clien.email,   
-                   clien.cidade); 
-            clientes_encontrados++;
+                   clientes[i].status,
+                   clientes[i].nome,
+                   clientes[i].cpf,
+                   clientes[i].email,
+                   clientes[i].cidade);
+            ativos++;
         }
     }
-    
-    fclose(fp);
 
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 
-    if (clientes_encontrados == 0) {
-        printf("\nNenhum cliente inativo encontrado.\n");
-    } else {
-        printf("\nTotal de clientes inativos listados: %d\n", clientes_encontrados);
-    }
-    
-    printf("\nENTER para continuar");
-    getchar(); 
+    if (ativos == 0)
+        printf("Nenhum cliente inativo encontrado.\n");
+    else
+        printf("Total de clientes iattivos listados: %d\n", ativos);
+    free(clientes);
+
+    printf("ENTER para continuar");
+    Enter();
 }
 
 
