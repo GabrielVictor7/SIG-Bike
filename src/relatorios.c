@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include "../include/vendas.h"
 #include "../include/tela_inicial.h"
 #include "../include/relatorios.h"
@@ -303,7 +304,7 @@ void relatorio_de_cliente_inativo(void) {
     int ativos = 0;
 
     for (int i = 0; i < lidos; i++) {
-        if (clientes[i].status == 'A') {
+        if (clientes[i].status == 'I') {
             printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
                    clientes[i].status,
                    clientes[i].nome,
@@ -319,7 +320,7 @@ void relatorio_de_cliente_inativo(void) {
     if (ativos == 0)
         printf("Nenhum cliente inativo encontrado.\n");
     else
-        printf("Total de clientes iattivos listados: %d\n", ativos);
+        printf("Total de clientes inattivos listados: %d\n", ativos);
     free(clientes);
 
     printf("ENTER para continuar");
@@ -391,7 +392,7 @@ void relat_clientes_ordem_alfabetica(void){
     } else {
         printf("\nTotal de clientes listados: %d\n", quantidade);
     }
-
+    
     Enter();
     novo_cliente = lista;
     while (lista != NULL) {
@@ -465,7 +466,6 @@ void relatorio_de_funcionario_ativo(void) {
         printf("Nenhum funcionário Ativo encontrado.\n");
     else
         printf("Total de Funcionários Ativos listados: %d\n", ativos);
-    free(clientes);
 
     printf("ENTER para continuar");
     Enter();
@@ -528,7 +528,6 @@ void relatorio_de_funcionario_inativo(void) {
         printf("Nenhum funcionário inativo encontrado.\n");
     else
         printf("Total de Funcionários inattivos listados: %d\n", ativos);
-    free(clientes);
 
     printf("ENTER para continuar");
     Enter();
@@ -546,42 +545,69 @@ void relat_funcionarios_ordem_alfabetica(void) {
         return;
     }
 
-    Funcionario  funcionarios_temp[MAX_FUNCIONARIO];
-    int qtd = 0;
+    Funcionario *lista = NULL;
+    Funcionario *novo_funcionario;
+    Funcionario temp_funcionario;
 
-    while (fread(&funcionarios_temp[qtd], sizeof(Funcionario), 1, fp)) {
-        qtd++;
-        if (qtd >= 100) break;
-    }
-    fclose(fp);
+    while (fread(&temp_funcionario, sizeof(Funcionario), 1, fp) == 1) {
+        novo_funcionario = (Funcionario*) malloc(sizeof(Funcionario));
+    
+        *novo_funcionario = temp_funcionario;
+        novo_funcionario->prox = NULL;
 
-    for (int i = 0; i < qtd - 1; i++) {
-        for (int j = i + 1; j < qtd; j++) {
-            if (strcasecmp(funcionarios_temp[i].nome, funcionarios_temp[j].nome) > 0) {
-                Funcionario temp = funcionarios_temp[i];
-                funcionarios_temp[i] = funcionarios_temp[j];
-                funcionarios_temp[j] = temp;
+        if (lista == NULL) {
+            lista = novo_funcionario;
+        } else if (strcasecmp(novo_funcionario->nome, lista->nome) < 0) {
+            novo_funcionario->prox = lista;
+            lista = novo_funcionario;
+        } else {
+            Cliente *anter = lista;
+            Cliente *atual = lista->prox;
+            while (atual != NULL && strcasecmp(atual->nome, novo_funcionario->nome) < 0) {
+                anter = atual;
+                atual = atual->prox;
             }
+            anter->prox = novo_funcionario;
+            novo_funcionario->prox = atual;
         }
     }
 
+    fclose(fp);
+
     system("clear||cls");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("═══════════════════════════════       Relatório de Funcionários Ordem Alfabética       ═══════════════════════════════════\n");
+    printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
+           "Status", "Nome", "CPF", "Email", "Cargo");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 
-    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-    printf("════════════════════════════════════════   Relatório de Funcionários em Ordem Alfabética   ════════════════════════════════════════\n");
-    printf("%-7s | %-30s | %-30s | %-20s | %-15s\n", "Status", "Nome", "Email", "Cargo", "CPF");
-    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    novo_funcionario = lista;
+    int quantidade = 0;
+    while (novo_funcionario != NULL) {
+        printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
+               novo_funcionario->status,
+               novo_funcionario->nome,
+               novo_funcionario->cpf,
+               novo_funcionario->email,
+               novo_funcionario->cargo);
+        quantidade++;
+        novo_funcionario = novo_funcionario->prox;
+    }
 
-    for (int i = 0; i < qtd; i++) {
-        printf("%-7c | %-30s | %-30s | %-20s | %-15s\n",
-               funcionarios_temp[i].status,
-               funcionarios_temp[i].nome,
-               funcionarios_temp[i].email,
-               funcionarios_temp[i].cargo,
-               funcionarios_temp[i].cpf);
+    if (quantidade == 0) {
+        printf("\nNenhum cliente cadastrado encontrado.\n");
+    } else {
+        printf("\nTotal de clientes listados: %d\n", quantidade);
     }
 
     Enter();
+    novo_funcionario = lista;
+    while (lista != NULL) {
+        lista = lista->prox;
+        free(novo_funcionario);
+        novo_funcionario = lista;
+    }
+
 }
 
 
