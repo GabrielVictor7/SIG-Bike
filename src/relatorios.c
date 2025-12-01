@@ -415,52 +415,58 @@ void relat_clientes_ordem_alfabetica(void){
 
 
 void relatorio_de_funcionario_ativo(void) {
-
     FILE *fp = fopen(ARQ_FUNCIONARIOS, "rb");
-    
-    if (!fp) {
+
+    if (fp == NULL) {
         system("clear||cls");
         printf("--- Relatório de Funcionários ---\n");
-        printf("Nenhum funcionário cadastrado ainda.\n");
-        Enter(); 
+        printf("Erro na abertura dp arquivo\n");
+        printf("Enter para voltar...\n");
+        Enter();
         return;
     }
 
-    Funcionario func; 
-    int funcionarios_encontrados = 0;  
+    Funcionario *funcionario = malloc(MAX_FUNCIONARIO * sizeof(Funcionario));
+
+    int lidos = 0;
+    while (lidos < MAX_FUNCIONARIO &&
+           fread(&funcionario[lidos], sizeof(Funcionario), 1, fp) == 1) {
+        lidos++;
+    }
+
+    fclose(fp);
 
     system("clear||cls");
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
-    printf("════════════════════════════════════           Relatório Funcionário Ativos           ════════════════════════════════════\n");
+    printf("═════════════════════════════════             Relatório Funcionários Ativos            ═══════════════════════════════════\n");
     printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
            "Status", "Nome", "CPF", "Email", "Cargo");
-           
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n"); 
 
-    while (fread(&func, sizeof(Funcionario), 1, fp)) {
-        if (func.status == 'A') {
+    int ativos = 0;
+
+    for (int i = 0; i < lidos; i++) {
+        if (funcionario[i].status == 'A') {
             printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
-                   func.status,
-                   func.nome,    
-                   func.cpf,     
-                   func.email,   
-                   func.cargo); 
-            funcionarios_encontrados++;
+                   funcionario[i].status,
+                   funcionario[i].nome,
+                   funcionario[i].cpf,
+                   funcionario[i].email,
+                   funcionario[i].cargo);
+            ativos++;
         }
     }
-    
-    fclose(fp);
 
     printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 
-    if (funcionarios_encontrados == 0) {
-        printf("\nNenhum funcionário ativo encontrado.\n");
-    } else {
-        printf("\nTotal de funcionarios ativos listados: %d\n", funcionarios_encontrados);
-    }
-    
-    printf("\nENTER para continuar");
-    getchar(); 
+    if (ativos == 0)
+        printf("Nenhum funcionário Ativo encontrado.\n");
+    else
+        printf("Total de Funcionários Ativos listados: %d\n", ativos);
+    free(clientes);
+
+    printf("ENTER para continuar");
+    Enter();
 }
 
 
