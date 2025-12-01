@@ -325,12 +325,9 @@ void relatorio_de_cliente_inativo(void) {
     printf("ENTER para continuar");
     Enter();
 }
-
-
-
-void relat_clientes_ordem_alfabetica(void) {
-    FILE* fp = fopen(ARQ_CLIENTES, "rb");
-    if (!fp) {
+void relat_clientes_ordem_alfabetica(void){
+    FILE *fp = fopen(ARQ_CLIENTES, "rb");
+    if (fp == NULL) {
         system("clear||cls");
         printf("--- Relatório de Clientes ---\n");
         printf("Nenhum cliente cadastrado ainda.\n");
@@ -338,46 +335,77 @@ void relat_clientes_ordem_alfabetica(void) {
         return;
     }
 
-    Cliente clientes_temp[MAX_CLIENTES];
-    int qtd = 0;
-    while (fread(&clientes_temp[qtd], sizeof(Cliente), 1, fp)) {
-        qtd++;
-        if (qtd >= MAX_CLIENTES) break;
-    }
-    fclose(fp);
+    Cliente *lista = NULL;
+    Cliente *novo_cliente;
+    Cliente temp_cliente;
 
-    //parte da ordenação, nessa parte, eu tive ajuda no gemini e da wiki de algoritmos de ordenação
-    //estava tendo bastante dificuldade na parte das listas de clientes temporários
-    //e tambem na parte dos acentos e letras maiúsculas 
-    //https://pt.wikipedia.org/wiki/Algoritmo_de_ordena%C3%A7%C3%A3o <- link da wiki
+    while (fread(&temp_cliente, sizeof(Cliente), 1, fp) == 1) {
+        novo_cliente = (Cliente*) malloc(sizeof(Cliente));
+    
+        *novo_cliente = temp_cliente;
+        novo_cliente->prox = NULL;
 
-    for (int i = 0; i < qtd - 1; i++) {
-        for (int j = i + 1; j < qtd; j++) {
-            if (strcasecmp(clientes_temp[i].nome, clientes_temp[j].nome) > 0) {
-                Cliente temp = clientes_temp[i];
-                clientes_temp[i] = clientes_temp[j];
-                clientes_temp[j] = temp;
+        if (lista == NULL) {
+            lista = novo_cliente;
+        } else if (strcasecmp(novo_cliente->nome, lista->nome) < 0) {
+            novo_cliente->prox = lista;
+            lista = novo_cliente;
+        } else {
+            Cliente *anter = lista;
+            Cliente *atual = lista->prox;
+            while (atual != NULL && strcasecmp(atual->nome, novo_cliente->nome) < 0) {
+                anter = atual;
+                atual = atual->prox;
             }
+            anter->prox = novo_cliente;
+            novo_cliente->prox = atual;
         }
     }
 
+    fclose(fp);
+
     system("clear||cls");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    printf("═════════════════════════════════       Relatório de Clientes Ordem Alfabética       ═════════════════════════════════════\n");
+    printf("%-7s | %-30s | %-15s | %-40s | %-20s\n", 
+           "Status", "Nome", "CPF", "Email", "Cidade");
+    printf("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
 
-    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
-    printf("════════════════════════════════════════   Relatório de Clientes em Ordem Alfabética   ════════════════════════════════════════\n");
-    printf("%-7s | %-30s | %-30s | %-15s\n", "Status", "Nome", "Email", "CPF");
-    printf("═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════\n");
+    novo_cliente = lista;
+    int quantidade = 0;
+    while (novo_cliente != NULL) {
+        printf("%-7c | %-30s | %-15s | %-40s | %-20s\n",
+               novo_cliente->status,
+               novo_cliente->nome,
+               novo_cliente->cpf,
+               novo_cliente->email,
+               novo_cliente->cidade);
+        quantidade++;
+        novo_cliente = novo_cliente->prox;
+    }
 
-    for (int i = 0; i < qtd; i++) {
-        printf("%-7c | %-30s | %-30s | %-15s\n",
-               clientes_temp[i].status,
-               clientes_temp[i].nome,
-               clientes_temp[i].email,
-               clientes_temp[i].cpf);
+    if (quantidade == 0) {
+        printf("\nNenhum cliente cadastrado encontrado.\n");
+    } else {
+        printf("\nTotal de clientes listados: %d\n", quantidade);
     }
 
     Enter();
+    novo_cliente = lista;
+    while (lista != NULL) {
+        lista = lista->prox;
+        free(novo_cliente);
+        novo_cliente = lista;
+    }
+
+
+    //lista encadeada 
+    //ela foi reutilizada do professor Flavius Gorgonio
+    //disponível em -> https://replit.com/@flaviusgorgonio/ListasComArquivoTexto3c#main.c 
+    //tive ajuda do chatgpt para compreeender melhor tambem, principalmente na parte da variável auxiliar
 }
+
+
 
 
 
