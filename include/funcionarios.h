@@ -1,6 +1,8 @@
 #ifndef FUNCIONARIOS_H
 #define FUNCIONARIOS_H
 
+
+#define MAX_FUNCIONARIO 200
 #define TAM_NOME_FUNC 50
 #define TAM_EMAIL_FUNC 50
 #define TAM_CARGO_FUNC 30
