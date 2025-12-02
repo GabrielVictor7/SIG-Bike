@@ -161,7 +161,7 @@ char tela_relatorio_vendas(void) {
     printf("║                           1. Relatorio geral de vendas                        ║\n");
     printf("║                           2. Relatorio vendas ativos                          ║\n");
     printf("║                           3. Relatorio vendas inativos                        ║\n");
-    printf("║                           3. Lista de ordem por maior numero de vendas        ║\n");
+    printf("║                           4. Lista de ordem por maior numero de vendas        ║\n");
     printf("║                                                                               ║\n");
     printf("║                           0. Voltar                                           ║\n");
     printf("╚═══════════════════════════════════════════════════════════════════════════════╝\n");
@@ -357,28 +357,28 @@ void relat_clientes_ordem_alfabetica(void){
         novo_cliente->prox = NULL;
 
         if (lista == NULL) {
-    lista = novo_cliente;
-    novo_cliente->prox = NULL;
-    }
-    else if (strcmp(novo_cliente->nome, lista->nome) < 0) {
-    novo_cliente->prox = lista;
-    lista = novo_cliente;
-    }
-    else {
-    Cliente *anter = lista;
-    Cliente *atual = lista->prox;
+        lista = novo_cliente;
+        novo_cliente->prox = NULL;
+        }
+        else if (strcmp(novo_cliente->nome, lista->nome) < 0) {
+        novo_cliente->prox = lista;
+        lista = novo_cliente;
+        }
+        else {
+        Cliente *anter = lista;
+        Cliente *atual = lista->prox;
 
-    while (atual != NULL && strcmp(atual->nome, novo_cliente->nome) < 0) {
-        anter = atual;
-        atual = atual->prox;
-    }
+        while (atual != NULL && strcmp(atual->nome, novo_cliente->nome) < 0) {
+            anter = atual;
+            atual = atual->prox;
+        }
 
-    anter->prox = novo_cliente;
-    novo_cliente->prox = atual;
-    }
+        anter->prox = novo_cliente;
+        novo_cliente->prox = atual;
+        }
 
 
-    }
+        }
 
     fclose(fp);
 
@@ -417,7 +417,7 @@ void relat_clientes_ordem_alfabetica(void){
     }
 
 
-    //lista encadeada 
+    //lista em ordem alfabética 
     //ela foi reutilizada do professor Flavius Gorgonio
     //disponível em -> https://replit.com/@flaviusgorgonio/ListasComArquivoTexto3c#main.c 
     //tive ajuda do chatgpt para compreeender melhor tambem, principalmente na parte da variável auxiliar
@@ -571,21 +571,28 @@ void relat_funcionarios_ordem_alfabetica(void) {
         novo_funcionario->prox = NULL;
 
         if (lista == NULL) {
-            lista = novo_funcionario;
-        } else if (strcasecmp(novo_funcionario->nome, lista->nome) < 0) {
-            novo_funcionario->prox = lista;
-            lista = novo_funcionario;
-        } else {
-            Funcionario *anter = lista;
-            Funcionario *atual = lista->prox;
-            while (atual != NULL && strcasecmp(atual->nome, novo_funcionario->nome) < 0) {
-                anter = atual;
-                atual = atual->prox;
-            }
-            anter->prox = novo_funcionario;
-            novo_funcionario->prox = atual;
+        lista = novo_funcionario;
+        novo_funcionario->prox = NULL;
         }
-    }
+        else if (strcmp(novo_funcionario->nome, lista->nome) < 0) {
+        novo_funcionario->prox = lista;
+        lista = novo_funcionario;
+        }
+        else {
+        Funcionario *anter = lista;
+        Funcionario *atual = lista->prox;
+
+        while (atual != NULL && strcmp(atual->nome, novo_funcionario->nome) < 0) {
+            anter = atual;
+            atual = atual->prox;
+        }
+
+        anter->prox = novo_funcionario;
+        novo_funcionario->prox = atual;
+        }
+
+
+        }
 
     fclose(fp);
 
