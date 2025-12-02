@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include "../include/vendas.h"
 #include "../include/tela_inicial.h"
 #include "../include/relatorios.h"
