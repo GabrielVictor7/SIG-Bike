@@ -357,20 +357,27 @@ void relat_clientes_ordem_alfabetica(void){
         novo_cliente->prox = NULL;
 
         if (lista == NULL) {
-            lista = novo_cliente;
-        } else if (strcasecmp(novo_cliente->nome, lista->nome) < 0) {
-            novo_cliente->prox = lista;
-            lista = novo_cliente;
-        } else {
-            Cliente *anter = lista;
-            Cliente *atual = lista->prox;
-            while (atual != NULL && strcasecmp(atual->nome, novo_cliente->nome) < 0) {
-                anter = atual;
-                atual = atual->prox;
-            }
-            anter->prox = novo_cliente;
-            novo_cliente->prox = atual;
-        }
+    lista = novo_cliente;
+    novo_cliente->prox = NULL;
+    }
+    else if (strcmp(novo_cliente->nome, lista->nome) < 0) {
+    novo_cliente->prox = lista;
+    lista = novo_cliente;
+    }
+    else {
+    Cliente *anter = lista;
+    Cliente *atual = lista->prox;
+
+    while (atual != NULL && strcmp(atual->nome, novo_cliente->nome) < 0) {
+        anter = atual;
+        atual = atual->prox;
+    }
+
+    anter->prox = novo_cliente;
+    novo_cliente->prox = atual;
+    }
+
+
     }
 
     fclose(fp);
