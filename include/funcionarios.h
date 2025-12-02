@@ -10,16 +10,16 @@
 
 #define ARQ_FUNCIONARIOS "dados/funcionarios.dat"  // Corrigido o caminho do arquivo
 
+typedef struct funcionario Funcionario;
 
-
-
-typedef struct {
+struct funcionario  {
     char nome[TAM_NOME_FUNC];
     char email[TAM_EMAIL_FUNC];
     char cargo[TAM_CARGO_FUNC];
     char cpf[TAM_CPF_FUNC];
     char status; // 'A' para ativo, 'I' para inativo
-} Funcionario;
+    Funcionario *prox;
+};
 
 // Módulos principais
 void modulo_funcionarios(void);

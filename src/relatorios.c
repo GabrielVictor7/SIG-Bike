@@ -6,8 +6,13 @@
 #include "../include/tela_inicial.h"
 #include "../include/relatorios.h"
 #include "../include/bicicletas.h"
+#include "../include/clientes.h"    
+#include "../include/funcionarios.h" 
 #define ARQ_BICICLETAS "dados/bicicletas.dat"
 #define ARQ_VENDAS "dados/vendas.dat"
+#define ARQ_FUNCIONARIOS "dados/funcionarios.dat"
+#define ARQ_CLIENTES "dados/clientes.dat"
+
 
 void modulo_relatorios(void) {
     char opcao;
@@ -137,7 +142,7 @@ void modulo_relatorios_vendas(void) {
             case '1': relatorio_vendas(); break;
             case '2': relatorio_vendas_ativas(); break;
             case '3': relatorio_vendas_inativas(); break;
-
+            case '4': relat_vendas_ordem_alfabetica(); break;
             case '0': return; 
             default:
                 printf("Opção inválida!\n");
@@ -156,6 +161,7 @@ char tela_relatorio_vendas(void) {
     printf("║                           1. Relatorio geral de vendas                        ║\n");
     printf("║                           2. Relatorio vendas ativos                          ║\n");
     printf("║                           3. Relatorio vendas inativos                        ║\n");
+    printf("║                           3. Lista de ordem por maior numero de vendas        ║\n");
     printf("║                                                                               ║\n");
     printf("║                           0. Voltar                                           ║\n");
     printf("╚═══════════════════════════════════════════════════════════════════════════════╝\n");
@@ -177,6 +183,7 @@ void modulo_relatorios_bicicletas(void) {
             case '1': relatorio_bicicletas(); break;
             case '2': relatorio_bicicletas_ativas(); break;
             case '3': relatorio_bicicletas_inativas(); break;
+            case '4': relat_bicicletas_ordem_alfabetica(); break;
 
             case '0': return; 
             default:
@@ -196,6 +203,7 @@ char tela_relatorio_bicicletas(void) {
     printf("║                           1. Relatorio geral de bicicletas                    ║\n");
     printf("║                           2. Relatorio bicicletas ativos                      ║\n");
     printf("║                           3. Relatorio bicicletas inativos                    ║\n");
+    printf("║                           4. Lista de bicicletas em ordem alfabetica          ║\n");
     printf("║                                                                               ║\n");
     printf("║                           0. Voltar                                           ║\n");
     printf("╚═══════════════════════════════════════════════════════════════════════════════╝\n");
@@ -561,8 +569,8 @@ void relat_funcionarios_ordem_alfabetica(void) {
             novo_funcionario->prox = lista;
             lista = novo_funcionario;
         } else {
-            Cliente *anter = lista;
-            Cliente *atual = lista->prox;
+            Funcionario *anter = lista;
+            Funcionario *atual = lista->prox;
             while (atual != NULL && strcasecmp(atual->nome, novo_funcionario->nome) < 0) {
                 anter = atual;
                 atual = atual->prox;
@@ -858,6 +866,111 @@ void relatorio_vendas_inativas(void) {
 
 
 
+//════════════════════════════════════════════════ Lista de maior numero de vendas ════════════════════════════════════════════════
+void relat_vendas_ordem_alfabetica(void) {
+    FILE* fp = fopen(VENDAS_FILE, "rb");  // Use a constante definida no header
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de vendas ---\n");
+        printf("Nenhuma venda cadastrada ainda.\n");
+        Enter();
+        return;
+    }
+
+    Venda *lista = NULL;
+    Venda *novo_venda;
+    Venda temp_venda;
+
+
+    while (fread(&temp_venda, sizeof(Venda), 1, fp) == 1) {
+        if (temp_venda.status == 'I') {
+            continue;
+        }
+
+        novo_venda = (Venda*) malloc(sizeof(Venda));
+        if (!novo_venda) {
+            printf("Erro de alocação de memória!\n");
+            fclose(fp);
+            return;
+        }
+
+        *novo_venda = temp_venda;
+        novo_venda->prox = NULL;
+
+   
+        if (lista == NULL) {
+            lista = novo_venda;
+        } 
+        else if (novo_venda->valor_total > lista->valor_total) {
+            novo_venda->prox = lista;
+            lista = novo_venda;
+        } 
+        else {
+            Venda *anterior = lista;
+            Venda *atual = lista->prox;
+
+            while (atual != NULL && 
+                   atual->valor_total > novo_venda->valor_total) {
+                anterior = atual;
+                atual = atual->prox;
+            }
+            anterior->prox = novo_venda;
+            novo_venda->prox = atual;
+        }
+    }
+
+    fclose(fp);
+
+
+      system("cls||clear");
+    
+    printf("\n");
+    printf("       ╔══════════════════════════════════════════════════════════════════╗\n");
+    printf("       ║                        RELATÓRIO DE VENDAS                       ║\n");
+    printf("       ╚══════════════════════════════════════════════════════════════════╝\n\n");
+
+    printf("╔══════╦═════════╦════════════════╦════════════════╦════════════╦══════════════╗\n");
+    printf("║ ID   ║ Status  ║ CPF Cliente    ║ CPF Funcionário║ Quantidade ║ Valor Total  ║\n");
+    printf("╠══════╬═════════╬════════════════╬════════════════╬════════════╬══════════════╣\n");
+
+    novo_venda = lista;
+    int quantidade = 0;
+    while (novo_venda != NULL) {
+        
+          printf("║ %-4d ║    %c    ║ %-14s ║ %-14s ║ %-10d ║ R$ %8.2f  ║\n",
+               novo_venda->id,  
+               novo_venda->status,
+               novo_venda->cpf_cliente,
+               novo_venda->cpf_funcionario,
+               novo_venda->quantidade,
+               novo_venda->valor_total);
+               quantidade++;
+               novo_venda= novo_venda->prox;
+        }
+          
+
+        
+        
+   printf("╚══════╩═════════╩════════════════╩════════════════╩════════════╩══════════════╝\n");
+        if (quantidade == 0) {
+        printf("\nNenhuma venda cadastrado encontrado.\n");
+        } else {
+        printf("\nTotal de vendas listadss: %d\n", quantidade);
+        }
+
+        Enter();
+        novo_venda = lista;
+        while (lista != NULL) {
+            lista = lista->prox;
+            free(novo_venda);
+            novo_venda = lista;
+        }
+            
+   }
+
+
+
+
 //════════════════════════════════════════════════ RELATORIO DE BICICLETAS ════════════════════════════════════════════════
 
 
@@ -1107,4 +1220,115 @@ void relatorio_bicicletas_inativas(void) {
     Enter();
 
 
+
+
+    
 }
+
+
+
+
+//════════════════════════════════════════════════ RELATORIO DE BICICLETAS INATIVAS ════════════════════════════════════════════════
+void relat_bicicletas_ordem_alfabetica(void) {
+
+    FILE* fp = fopen(ARQ_BICICLETAS, "rb");
+    if (!fp) {
+        system("clear||cls");
+        printf("--- Relatório de bicicletas ---\n");
+        printf("Nenhuma bicicleta cadastrada ainda.\n");
+        Enter();
+        return;
+    }
+
+    Bicicleta *lista = NULL;
+    Bicicleta *novo_bicicleta;
+    Bicicleta temp_bicicleta;
+
+    while (fread(&temp_bicicleta, sizeof(Bicicleta), 1, fp) == 1) {
+
+        novo_bicicleta = (Bicicleta*) malloc(sizeof(Bicicleta));
+
+        *novo_bicicleta = temp_bicicleta;
+        novo_bicicleta->prox = NULL;
+
+        if (lista == NULL) {
+            lista = novo_bicicleta;
+
+        } else if (strcasecmp(novo_bicicleta->marca, lista->marca) < 0) {
+            novo_bicicleta->prox = lista;
+            lista = novo_bicicleta;
+
+        } else {
+            Bicicleta *anter = lista;
+            Bicicleta *atual = lista->prox;
+
+            while (atual != NULL && 
+                   strcasecmp(atual->marca, novo_bicicleta->marca) < 0) 
+            {
+                anter = atual;
+                atual = atual->prox;
+            }
+
+            anter->prox = novo_bicicleta;
+            novo_bicicleta->prox = atual;
+        }
+    }
+
+    fclose(fp);
+
+    // feito com base no modelo do professor flavius
+
+    system("cls||clear");
+    printf("\n");
+    printf("              ╔══════════════════════════════════════════════════════════════════╗\n");
+    printf("              ║                     RELATÓRIO DE BICICLETAS ATIVAS               ║\n");
+    printf("              ╚══════════════════════════════════════════════════════════════════╝\n\n");
+
+
+    //
+    printf("╔══════╦═════════╦═══════════════════╦═══════════════════╦══════════════╦════════════╦══════════════╗\n");
+    printf("║ ID   ║ Status  ║ Marca             ║ Modelo            ║ Preço        ║ Estoque    ║ ID Interno   ║\n");
+    printf("╠══════╬═════════╬═══════════════════╬═══════════════════╬══════════════╬════════════╬══════════════╣\n");
+
+    novo_bicicleta = lista;
+    int quantidade = 0;
+    while (novo_bicicleta != NULL) {
+        
+            printf("║ %-4d ║    %c    ║ %-17.17s ║ %-17.17s ║ R$ %8.2f  ║ %-10d ║ %-11d  ║\n",
+               novo_bicicleta->id,  
+               novo_bicicleta->status,
+               novo_bicicleta->marca,
+               novo_bicicleta->modelo,
+               novo_bicicleta->preco,
+               novo_bicicleta->estoque,
+               novo_bicicleta->id);
+               quantidade++;
+               novo_bicicleta= novo_bicicleta->prox;
+        }
+          
+        
+    printf("╚══════╩═════════╩═══════════════════╩═══════════════════╩══════════════╩════════════╩══════════════╝\n");
+        if (quantidade == 0) {
+        printf("\nNenhuma bicicleta cadastrado encontrado.\n");
+        } else {
+        printf("\nTotal de bicicletas listadss: %d\n", quantidade);
+        }
+
+        Enter();
+        novo_bicicleta = lista;
+        while (lista != NULL) {
+            lista = lista->prox;
+            free(novo_bicicleta);
+            novo_bicicleta = lista;
+        }
+            
+   }
+
+
+
+
+
+     
+
+
+  

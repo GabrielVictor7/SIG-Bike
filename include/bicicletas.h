@@ -8,7 +8,9 @@
 
 #define ARQ_BICICLETAS "dados/bicicletas.dat"
 
-typedef struct {
+typedef struct bicicleta Bicicleta;
+
+struct bicicleta {
     char marca[TAM_MARCA];
     char modelo[TAM_MODELO];
     int ano;
@@ -17,7 +19,8 @@ typedef struct {
     int estoque;
     int id;
     char status; // 'A' para ativo, 'I' para inativo
-} Bicicleta;
+    Bicicleta *prox;  
+};
 
 extern Bicicleta bicicletas[MAX_BICICLETAS];
 extern int qtd_bicicletas;

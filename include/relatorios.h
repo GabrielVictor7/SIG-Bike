@@ -4,6 +4,7 @@
 void relatorio_vendas(void);
 void relatorio_vendas_ativas(void);
 void relatorio_vendas_inativas(void);
+void relat_vendas_ordem_alfabetica(void);
 
 void relatorio_de_cliente_ativo(void);
 void relatorio_de_cliente_inativo(void);
@@ -18,6 +19,7 @@ void relat_funcionarios_ordem_alfabetica(void);
 void relatorio_bicicletas(void);
 void relatorio_bicicletas_ativas(void);
 void relatorio_bicicletas_inativas(void);
+void relat_bicicletas_ordem_alfabetica(void);
 
 char menu_relatorio(void);
 void modulo_relatorios(void);

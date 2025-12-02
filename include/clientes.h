@@ -9,14 +9,19 @@
 
 #define ARQ_CLIENTES "dados/clientes.dat"
 
-typedef struct {
+
+
+typedef struct cliente Cliente;
+// estrutura depois o apelido
+
+struct cliente {
     char nome[TAM_NOME];
     char email[TAM_EMAIL];
     char cidade[TAM_CIDADE];
     char cpf[TAM_CPF];
     char status; // 'A' para ativo, 'I' para inativo
-    struct Cliente *prox;
-} Cliente;
+    Cliente *prox;  
+};
 
 extern Cliente clientes[MAX_CLIENTES];
 extern int qtd_clientes;
